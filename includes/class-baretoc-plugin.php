@@ -57,10 +57,12 @@ final class BareTOC_Plugin {
 		$this->settings  = new BareTOC_Settings();
 		$this->shortcode = new BareTOC_Shortcode( $parser, $renderer, $this->settings );
 		$integrations    = new BareTOC_Integrations();
+		$updater         = new BareTOC_Updater( 'baretoc', BARETOC_BASENAME, BARETOC_VERSION );
 
 		$this->settings->register();
 		$this->shortcode->register();
 		$integrations->register();
+		$updater->register();
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 	}

@@ -29,7 +29,10 @@
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf",
-        "test": "php tests/smoke.php",
+        "test": [
+            "php tests/smoke.php",
+            "php tests/updater.php"
+        ],
         "test:js": "node --check assets/js/smooth-scroll.js",
         "check": [
             "@test",
