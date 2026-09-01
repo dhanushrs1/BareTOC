@@ -4,7 +4,7 @@ Tags: table of contents, toc, headings, anchors, seo
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,12 @@ Yes. It is disabled by default and can be enabled or disabled under Settings > B
 Smart numbering cleanup prevents the list marker and a number already written into the heading from appearing together. For example, the heading "2. Installation" is displayed as "Installation" inside an ordered list, where the list supplies the number. The original heading and its anchor are never changed. Disable the option under Settings > BareTOC or use `[baretoc clean_numbers="no"]` to retain the complete label.
 
 == Changelog ==
+
+= 1.2.1 =
+
+* Refined the optional minimal stylesheet with a neutral card surface, balanced spacing and polished links.
+* Added hierarchical numbering such as 1.1 and 1.1.1 to the optional numbered-list design.
+* Improved indentation for nested bullet and no-marker lists.
 
 = 1.2.0 =
 

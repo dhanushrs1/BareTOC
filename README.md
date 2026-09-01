@@ -24,7 +24,7 @@ Its rule is simple: the plugin owns structure; the active theme owns design. The
 - semantic `<nav>` output and native anchor navigation
 - optional smooth scrolling that respects reduced-motion preferences
 - automatic Rank Math detection
-- optional sub-1 KB structural stylesheet; disabled by default
+- optional lightweight neutral design with hierarchical numbering; disabled by default
 - no frontend JavaScript unless smooth scrolling is explicitly enabled
 
 ## Shortcode

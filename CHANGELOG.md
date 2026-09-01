@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Refined the optional minimal stylesheet with a neutral card surface, balanced spacing, and polished links.
+- Added hierarchical numbering such as 1.1 and 1.1.1 to the optional numbered-list design.
+- Improved indentation for nested bullet and no-marker lists.
+
 ## 1.2.0
 
 - Added smart numbering cleanup for consistently styled TOC labels.

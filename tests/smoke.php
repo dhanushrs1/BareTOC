@@ -10,7 +10,7 @@
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc.php' );
 define( 'BARETOC_URL', 'https://example.com/wp-content/plugins/baretoc/' );
-define( 'BARETOC_VERSION', '1.2.0' );
+define( 'BARETOC_VERSION', '1.2.1' );
 
 /** Minimal WordPress function doubles needed by the isolated smoke test. */
 function __( $text ) {
