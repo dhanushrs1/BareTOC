@@ -90,11 +90,85 @@ final class BareTOC_Shortcode {
 	 */
 	public function shortcode( $attributes = array() ) {
 		$attributes = is_array( $attributes ) ? $attributes : array();
-		$token      = wp_unique_id( 'baretoc-' );
+
+		if ( ! $this->is_filtering_post_content() ) {
+			return $this->render_template_shortcode( $attributes );
+		}
+
+		$token = wp_unique_id( 'baretoc-' );
 
 		$this->shortcodes[ $token ] = $attributes;
 
 		return '<!--baretoc-placeholder:' . esc_attr( $token ) . '-->';
+	}
+
+	/**
+	 * Detects whether WordPress is currently expanding the main content.
+	 *
+	 * Shortcodes in page-builder templates commonly run outside the_content. In
+	 * that context there is no later content pass in which to resolve our normal
+	 * server-side placeholder, so a small rendered-page fallback is required.
+	 *
+	 * @return bool
+	 */
+	private function is_filtering_post_content() {
+		return function_exists( 'doing_filter' ) && doing_filter( 'the_content' );
+	}
+
+	/**
+	 * Outputs a hidden runtime target for a shortcode placed in a site template.
+	 *
+	 * The target remains hidden until the lightweight template script finds the
+	 * configured minimum number of headings. Regular post-content shortcodes do
+	 * not use or enqueue this fallback.
+	 *
+	 * @param array<string,mixed> $attributes Raw shortcode attributes.
+	 * @return string
+	 */
+	private function render_template_shortcode( $attributes ) {
+		$post_id = function_exists( 'get_queried_object_id' ) ? (int) get_queried_object_id() : 0;
+
+		if ( $post_id <= 0 ) {
+			$post_id = (int) get_the_ID();
+		}
+
+		if ( $this->settings->is_disabled( $post_id ) ) {
+			return '';
+		}
+
+		$args = $this->apply_shortcode_attributes( $this->settings->get_for_post( $post_id ), $attributes );
+		$data = array(
+			'ariaLabel'       => __( 'Table of contents', 'baretoc' ),
+			'openLabel'       => __( 'Open table of contents', 'baretoc' ),
+			'closeLabel'      => __( 'Close table of contents', 'baretoc' ),
+			'headings'        => array_values( array_map( 'intval', $args['headings'] ) ),
+			'title'           => (string) $args['title'],
+			'titleElement'    => (string) $args['title_element'],
+			'listStyle'       => (string) $args['list_style'],
+			'cleanNumbering'  => ! empty( $args['clean_numbering'] ),
+			'minimumHeadings' => max( 1, (int) $args['minimum_headings'] ),
+			'generateIds'     => ! empty( $args['generate_ids'] ),
+			'container'       => isset( $args['container'] ) ? (string) $args['container'] : '',
+			'collapsible'     => ! empty( $args['collapsible'] ),
+			'initiallyOpen'   => ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ),
+		);
+		$json = wp_json_encode( $data );
+
+		if ( ! is_string( $json ) ) {
+			return '';
+		}
+
+		wp_enqueue_script( 'baretoc-template', BARETOC_URL . 'assets/js/template-toc.js', array(), BARETOC_VERSION, true );
+
+		if ( ! empty( $args['smooth_scroll'] ) ) {
+			wp_enqueue_script( 'baretoc-smooth-scroll', BARETOC_URL . 'assets/js/smooth-scroll.js', array(), BARETOC_VERSION, true );
+		}
+
+		if ( ! empty( $args['collapsible'] ) ) {
+			wp_enqueue_script( 'baretoc-toggle', BARETOC_URL . 'assets/js/toggle.js', array(), BARETOC_VERSION, true );
+		}
+
+		return '<div class="baretoc-runtime" hidden data-baretoc-config="' . esc_attr( $json ) . '"></div>';
 	}
 
 	/**
@@ -128,9 +202,10 @@ final class BareTOC_Shortcode {
 			return $content;
 		}
 
-		$render_configs = array();
-		$parse_levels   = $auto_insert && ! $has_shortcode ? $base_settings['headings'] : array();
-		$rendered_toc   = false;
+		$render_configs  = array();
+		$parse_levels    = $auto_insert && ! $has_shortcode ? $base_settings['headings'] : array();
+		$rendered_toc    = false;
+		$rendered_toggle = false;
 
 		if ( $has_shortcode && preg_match_all( self::PLACEHOLDER_PATTERN, $content, $placeholder_matches ) ) {
 			foreach ( $placeholder_matches[1] as $token ) {
@@ -147,7 +222,7 @@ final class BareTOC_Shortcode {
 		if ( $has_shortcode ) {
 			$content = preg_replace_callback(
 				self::PLACEHOLDER_PATTERN,
-				function ( $matches ) use ( $render_configs, $parsed, &$rendered_toc ) {
+				function ( $matches ) use ( $render_configs, $parsed, &$rendered_toc, &$rendered_toggle ) {
 					$token = $matches[1];
 
 					if ( ! isset( $render_configs[ $token ] ) ) {
@@ -158,6 +233,10 @@ final class BareTOC_Shortcode {
 
 					if ( '' !== $toc ) {
 						$rendered_toc = true;
+
+						if ( ! empty( $render_configs[ $token ]['collapsible'] ) ) {
+							$rendered_toggle = true;
+						}
 					}
 
 					return $toc;
@@ -175,6 +254,10 @@ final class BareTOC_Shortcode {
 
 		if ( $rendered_toc && $base_settings['smooth_scroll'] ) {
 			wp_enqueue_script( 'baretoc-smooth-scroll', BARETOC_URL . 'assets/js/smooth-scroll.js', array(), BARETOC_VERSION, true );
+		}
+
+		if ( $rendered_toggle ) {
+			wp_enqueue_script( 'baretoc-toggle', BARETOC_URL . 'assets/js/toggle.js', array(), BARETOC_VERSION, true );
 		}
 
 		$this->processing = false;
@@ -207,7 +290,9 @@ final class BareTOC_Shortcode {
 	 * @return array<string,mixed>
 	 */
 	private function apply_shortcode_attributes( $base, $attributes ) {
-		$attributes = shortcode_atts(
+		$base['collapsible']    = false;
+		$base['initially_open'] = true;
+		$attributes             = shortcode_atts(
 			array(
 				'headings'      => null,
 				'title'         => null,
@@ -216,6 +301,9 @@ final class BareTOC_Shortcode {
 				'minimum'       => null,
 				'min'           => null,
 				'title_element' => null,
+				'container'     => null,
+				'toggle'        => null,
+				'initial'       => null,
 			),
 			$attributes,
 			'baretoc'
@@ -286,6 +374,26 @@ final class BareTOC_Shortcode {
 
 		if ( null !== $attributes['title_element'] && in_array( $attributes['title_element'], array( 'div', 'p', 'h2', 'h3' ), true ) ) {
 			$base['title_element'] = $attributes['title_element'];
+		}
+
+		if ( null !== $attributes['container'] ) {
+			$base['container'] = substr( sanitize_text_field( (string) $attributes['container'] ), 0, 200 );
+		}
+
+		if ( null !== $attributes['toggle'] ) {
+			$collapsible = filter_var( $attributes['toggle'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+
+			if ( null !== $collapsible ) {
+				$base['collapsible'] = $collapsible;
+			}
+		}
+
+		if ( null !== $attributes['initial'] ) {
+			$initial = sanitize_key( (string) $attributes['initial'] );
+
+			if ( in_array( $initial, array( 'open', 'closed' ), true ) ) {
+				$base['initially_open'] = 'open' === $initial;
+			}
 		}
 
 		/**

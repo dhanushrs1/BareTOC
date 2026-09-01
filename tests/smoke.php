@@ -10,7 +10,7 @@
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc.php' );
 define( 'BARETOC_URL', 'https://example.com/wp-content/plugins/baretoc/' );
-define( 'BARETOC_VERSION', '1.3.0' );
+define( 'BARETOC_VERSION', '1.3.2' );
 
 /** Minimal WordPress function doubles needed by the isolated smoke test. */
 function __( $text ) {
@@ -74,6 +74,18 @@ function get_post_meta() {
 
 function get_the_ID() {
 	return 0;
+}
+
+function get_queried_object_id() {
+	return 0;
+}
+
+function doing_filter( $hook_name ) {
+	return 'the_content' === $hook_name && ( ! isset( $GLOBALS['baretoc_test_doing_content_filter'] ) || $GLOBALS['baretoc_test_doing_content_filter'] );
+}
+
+function wp_json_encode( $value ) {
+	return json_encode( $value );
 }
 
 function is_admin() {
@@ -175,6 +187,21 @@ foreach ( array( '<nav class="baretoc"', 'aria-label="Table of contents"', 'bare
 	}
 }
 
+if ( false !== strpos( $output, 'baretoc-toggle' ) ) {
+	baretoc_test_fail( 'Default output unexpectedly contains the shortcode-only toggle.' );
+}
+
+$toggle_args                     = $render_args;
+$toggle_args['collapsible']      = true;
+$toggle_args['initially_open']   = false;
+$toggle_output                   = $renderer->render( $parsed['headings'], $toggle_args );
+
+foreach ( array( 'baretoc--collapsible', 'class="baretoc-toggle"', 'data-baretoc-initial="closed"', 'baretoc-toggle-icon--open', 'baretoc-toggle-icon--close' ) as $needle ) {
+	if ( false === strpos( $toggle_output, $needle ) ) {
+		baretoc_test_fail( 'Collapsible renderer output missing ' . $needle );
+	}
+}
+
 $minimum_args                     = $render_args;
 $minimum_args['minimum_headings'] = 5;
 
@@ -245,6 +272,10 @@ if ( ! in_array( 'baretoc-smooth-scroll', $GLOBALS['baretoc_test_scripts'], true
 	baretoc_test_fail( 'Enabled smooth scrolling did not enqueue its script.' );
 }
 
+if ( in_array( 'baretoc-toggle', $GLOBALS['baretoc_test_scripts'], true ) ) {
+	baretoc_test_fail( 'Default shortcode unexpectedly enqueued the toggle script.' );
+}
+
 unset( $GLOBALS['baretoc_test_option'], $GLOBALS['baretoc_test_scripts'] );
 
 $shortcode   = new BareTOC_Shortcode( $parser, $renderer, $settings );
@@ -275,6 +306,43 @@ $unclean_shortcode = $shortcode->filter_content( $unclean_placeholder . '<h2>1. 
 if ( false === strpos( $unclean_shortcode, '>1. Numbered heading</a>' ) ) {
 	baretoc_test_fail( 'The clean_numbers shortcode override did not disable cleanup.' );
 }
+
+$GLOBALS['baretoc_test_doing_content_filter'] = false;
+$GLOBALS['baretoc_test_scripts']              = array();
+$template_shortcode                           = new BareTOC_Shortcode( $parser, $renderer, $settings );
+$template_output                              = $template_shortcode->shortcode(
+	array(
+		'container' => '.entry-content',
+		'initial'   => 'closed',
+		'minimum'   => '4',
+		'list'      => 'bullets',
+		'toggle'    => 'yes',
+	)
+);
+
+if ( false === strpos( $template_output, 'class="baretoc-runtime"' ) || false === strpos( $template_output, ' hidden ' ) ) {
+	baretoc_test_fail( 'Template shortcode did not return a hidden runtime target.' );
+}
+
+if ( ! in_array( 'baretoc-template', $GLOBALS['baretoc_test_scripts'], true ) ) {
+	baretoc_test_fail( 'Template shortcode did not enqueue its runtime script.' );
+}
+
+if ( ! in_array( 'baretoc-toggle', $GLOBALS['baretoc_test_scripts'], true ) ) {
+	baretoc_test_fail( 'Enabled template toggle did not enqueue its script.' );
+}
+
+if ( ! preg_match( '/data-baretoc-config="([^"]+)"/', $template_output, $template_match ) ) {
+	baretoc_test_fail( 'Template shortcode configuration is missing.' );
+}
+
+$template_config = json_decode( html_entity_decode( $template_match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ), true );
+
+if ( ! is_array( $template_config ) || 4 !== $template_config['minimumHeadings'] || '.entry-content' !== $template_config['container'] || 'bullets' !== $template_config['listStyle'] || true !== $template_config['collapsible'] || false !== $template_config['initiallyOpen'] ) {
+	baretoc_test_fail( 'Template shortcode configuration is incorrect.' );
+}
+
+unset( $GLOBALS['baretoc_test_doing_content_filter'], $GLOBALS['baretoc_test_scripts'] );
 
 $GLOBALS['baretoc_test_option'] = array_merge(
 	BareTOC_Settings::defaults(),

@@ -4,7 +4,7 @@ Tags: table of contents, toc, headings, anchors, seo
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,11 +12,12 @@ A lightweight, unstyled, and SEO-friendly table of contents. BareTOC handles str
 
 == Description ==
 
-BareTOC generates semantic, accessible anchor navigation from headings in WordPress content. It is shortcode-first, preserves existing heading markup, and adds no frontend CSS or JavaScript by default.
+BareTOC generates semantic, accessible anchor navigation from headings in WordPress content. It is shortcode-first, preserves existing heading markup, and adds no frontend CSS or JavaScript during regular post-content use by default.
 
 Core features:
 
 * Use `[baretoc]` wherever the table of contents should appear.
+* Place the same shortcode once in a reusable page-builder or single-post template.
 * Include any combination of H1 through H6; H2 through H4 are the defaults.
 * Preserve existing heading IDs, classes, and other attributes.
 * Generate unique IDs for headings that need them.
@@ -24,6 +25,7 @@ Core features:
 * Choose numbered, bullet, or theme-controlled no-marker lists.
 * Prevent duplicated numbering such as "2. 2. Installation" without altering headings.
 * Set a title, title element, and minimum heading count.
+* Opt into shortcode-only open and close controls with accessible plus and minus icons.
 * Use shortcode-only placement or automatic insertion.
 * Disable BareTOC or override heading levels on an individual post.
 * Exclude a heading with the `baretoc-ignore` or `no-toc` class.
@@ -59,6 +61,9 @@ Supported attributes:
 * `clean_numbers`: `yes` or `no`; overrides smart numbering cleanup for this TOC.
 * `minimum` or `min`: minimum number of matching headings.
 * `title_element`: `div`, `p`, `h2`, or `h3`.
+* `container`: optional CSS selector limiting heading discovery when used in a page-builder template.
+* `toggle`: `yes` or `no`; the control is absent unless explicitly enabled.
+* `initial`: `open` or `closed`; applies only when the toggle is enabled.
 
 == Frequently Asked Questions ==
 
@@ -86,6 +91,14 @@ BareTOC still emits a semantic unordered list with a `baretoc-list--none` class.
 
 Yes. It is disabled by default and can be enabled or disabled under Settings > BareTOC. When enabled, it applies only to BareTOC links and respects the visitor's reduced-motion preference.
 
+= Can I place the shortcode in a page-builder template? =
+
+Yes. Add `[baretoc]` once to a reusable single-post or single-page template. BareTOC automatically scans the rendered page in this context and keeps the TOC hidden when the number of matching headings is below the configured minimum. If needed, limit scanning to the content wrapper with an attribute such as `[baretoc minimum="3" container=".entry-content"]`.
+
+= How do I add an open and close control? =
+
+Use `[baretoc toggle="yes"]` to add the control and start open. Use `[baretoc toggle="yes" initial="closed"]` to start closed. This is intentionally a per-shortcode feature with no global setting. Without `toggle="yes"`, the TOC remains open and no control or toggle script is added.
+
 = Why does BareTOC remove the number at the start of a TOC label? =
 
 Smart numbering cleanup prevents the list marker and a number already written into the heading from appearing together. For example, the heading "2. Installation" is displayed as "Installation" inside an ordered list, where the list supplies the number. The original heading and its anchor are never changed. Disable the option under Settings > BareTOC or use `[baretoc clean_numbers="no"]` to retain the complete label.
@@ -95,6 +108,20 @@ Smart numbering cleanup prevents the list marker and a number already written in
 BareTOC uses WordPress's native update system. During normal dashboard or background update checks, it requests signed release metadata from the SiteFueler Update API. Available releases appear on the Plugins and Updates screens and install through WordPress's standard updater. Sites upgrading from a version earlier than 1.3.0 must install version 1.3.0 manually once; later releases can then be installed from the dashboard.
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Added shortcode-only open and close controls using accessible plus and minus icons.
+* Added optional open and closed initial states.
+* Added a complete shortcode reference to the BareTOC settings screen.
+* Added matching toggle behavior in reusable page-builder templates.
+
+= 1.3.1 =
+
+* Added reusable page-builder and single-template shortcode support.
+* Added an on-demand rendered-page heading fallback for template shortcodes.
+* Kept template TOCs hidden below the configured minimum heading count.
+* Added the optional `container` shortcode attribute.
 
 = 1.3.0 =
 

@@ -67,11 +67,16 @@ final class BareTOC_Renderer {
 		}
 		unset( $heading );
 
-		$list_style = isset( $args['list_style'] ) ? $args['list_style'] : 'numbered';
-		$list_style = in_array( $list_style, array( 'numbered', 'bullets', 'none' ), true ) ? $list_style : 'numbered';
-		$list_tag   = 'numbered' === $list_style ? 'ol' : 'ul';
-		$tree       = $this->build_tree( $selected );
-		$classes    = array( 'baretoc' );
+		$list_style  = isset( $args['list_style'] ) ? $args['list_style'] : 'numbered';
+		$list_style  = in_array( $list_style, array( 'numbered', 'bullets', 'none' ), true ) ? $list_style : 'numbered';
+		$list_tag    = 'numbered' === $list_style ? 'ol' : 'ul';
+		$tree        = $this->build_tree( $selected );
+		$classes     = array( 'baretoc' );
+		$collapsible = ! empty( $args['collapsible'] );
+
+		if ( $collapsible ) {
+			$classes[] = 'baretoc--collapsible';
+		}
 
 		/**
 		 * Filters classes applied to the TOC nav element.
@@ -95,12 +100,30 @@ final class BareTOC_Renderer {
 		$title_element = in_array( $title_element, array( 'div', 'p', 'h2', 'h3' ), true ) ? $title_element : 'div';
 
 		$output = '<nav class="' . esc_attr( implode( ' ', $classes ) ) . '" aria-label="' . esc_attr__( 'Table of contents', 'baretoc' ) . '">';
+		$list   = $this->render_list( $tree, $list_tag, $list_style, true );
 
-		if ( '' !== $title ) {
-			$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
+		if ( $collapsible ) {
+			$content_id    = wp_unique_id( 'baretoc-content-' );
+			$initial_state = ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ) ? 'open' : 'closed';
+
+			$output .= '<div class="baretoc-header">';
+
+			if ( '' !== $title ) {
+				$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
+			}
+
+			$output .= '<button class="baretoc-toggle" type="button" hidden aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '">';
+			$output .= $this->render_toggle_icons();
+			$output .= '</button></div>';
+			$output .= '<div id="' . esc_attr( $content_id ) . '" class="baretoc-content">' . $list . '</div>';
+		} else {
+			if ( '' !== $title ) {
+				$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
+			}
+
+			$output .= $list;
 		}
 
-		$output .= $this->render_list( $tree, $list_tag, $list_style, true );
 		$output .= '</nav>';
 
 		/**
@@ -111,6 +134,25 @@ final class BareTOC_Renderer {
 		 * @param array<string,mixed>                                  $args     Render settings.
 		 */
 		return (string) apply_filters( 'baretoc_output', $output, $selected, $args );
+	}
+
+	/**
+	 * Returns the user-supplied open and close icons for the disclosure button.
+	 *
+	 * The plus icon represents the action to open a closed TOC. The minus icon
+	 * represents the action to close an open TOC.
+	 *
+	 * @return string
+	 */
+	private function render_toggle_icons() {
+		$output  = '<span class="baretoc-toggle-icon baretoc-toggle-icon--open" hidden>';
+		$output .= '<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="128" y1="88" x2="128" y2="168" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
+		$output .= '</span>';
+		$output .= '<span class="baretoc-toggle-icon baretoc-toggle-icon--close">';
+		$output .= '<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
+		$output .= '</span>';
+
+		return $output;
 	}
 
 	/**
