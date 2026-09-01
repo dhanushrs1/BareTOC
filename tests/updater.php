@@ -8,7 +8,7 @@
  */
 
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
-define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc.php' );
+define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc/baretoc.php' );
 define( 'BARETOC_UPDATE_ACCESS_KEY', 'test-access-key' );
 
 /** Minimal WordPress error object used by the updater. */
