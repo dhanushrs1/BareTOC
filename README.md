@@ -6,11 +6,12 @@
 
 BareTOC is a standalone SiteFueler WordPress plugin that creates a clean, semantic table of contents from post headings.
 
-Its rule is simple: the plugin owns structure; the active theme owns design. The default frontend payload is no CSS, no JavaScript, no external requests, and no additional database query.
+Its rule is simple: the plugin owns structure; the active theme owns design. Regular post-content use has no CSS, no JavaScript, no external requests, and no additional database query by default. A small local script loads only when a page-builder template needs rendered-page heading discovery, smooth scrolling is enabled, or a shortcode explicitly enables the toggle.
 
 ## Features
 
 - `[baretoc]` shortcode with per-instance overrides
+- reusable page-builder and single-template shortcode support
 - selectable H1–H6 levels (H2–H4 by default)
 - valid nested list hierarchy, including skipped heading levels
 - generated collision-safe heading IDs
@@ -18,6 +19,7 @@ Its rule is simple: the plugin owns structure; the active theme owns design. The
 - numbered, bulleted, and marker-free list modes
 - smart removal of duplicate heading numbers from TOC labels
 - configurable title and minimum heading count
+- optional shortcode-only open and close control with accessible plus/minus icons
 - shortcode-only, before-content, after-first-paragraph, and before-first-heading placement
 - per-post disable switch and heading-level override
 - `.baretoc-ignore` and `.no-toc` opt-out classes
@@ -26,7 +28,7 @@ Its rule is simple: the plugin owns structure; the active theme owns design. The
 - automatic Rank Math detection
 - optional lightweight neutral design with hierarchical numbering; disabled by default
 - native WordPress dashboard updates through signed SiteFueler release packages
-- no frontend JavaScript unless smooth scrolling is explicitly enabled
+- no frontend JavaScript during regular post-content use unless smooth scrolling or a shortcode toggle is explicitly enabled
 
 ## Shortcode
 
@@ -37,9 +39,16 @@ Its rule is simple: the plugin owns structure; the active theme owns design. The
 [baretoc headings="h2,h3,h4" list="numbered"]
 [baretoc title="Contents" headings="h2,h3" list="none"]
 [baretoc clean_numbers="no"]
+[baretoc minimum="3" container=".entry-content"]
+[baretoc toggle="yes"]
+[baretoc toggle="yes" initial="closed"]
 ```
 
-Supported attributes are `headings`, `title`, `list`, `clean_numbers`, `minimum` (or `min`), and `title_element`.
+Supported attributes are `headings`, `title`, `list`, `clean_numbers`, `minimum` (or `min`), `title_element`, `container`, `toggle`, and `initial`.
+
+The same `[baretoc]` shortcode can be placed once in a page builder's reusable single-post or single-page template. BareTOC detects this context and scans the rendered page. It remains hidden when the page has fewer matching headings than `minimum` (three by default). If the template's main content wrapper is known, use `container` with its CSS selector to exclude headings elsewhere in the template, for example `[baretoc minimum="3" container=".entry-content"]`.
+
+Open and close behavior is deliberately shortcode-only. Use `[baretoc toggle="yes"]` to add the control while starting open, or `[baretoc toggle="yes" initial="closed"]` to start closed. Without `toggle="yes"`, the TOC stays open and neither the control nor its script is added. All supported examples and attributes are also listed under **Settings → BareTOC → Shortcode reference**.
 
 ## Installation
 
@@ -70,6 +79,11 @@ BareTOC adds no appearance CSS by default. Themes can target:
 ```css
 .baretoc {}
 .baretoc-title {}
+.baretoc-header {}
+.baretoc--collapsible {}
+.baretoc-toggle {}
+.baretoc-toggle-icon {}
+.baretoc-content {}
 .baretoc-list {}
 .baretoc-item {}
 .baretoc-link {}

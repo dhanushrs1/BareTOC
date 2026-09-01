@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.2
+
+- Added shortcode-only open and close controls with accessible plus and minus icons.
+- Added `toggle="yes"` and optional `initial="open|closed"` shortcode attributes without adding a global toggle setting.
+- Added a complete, copy-ready shortcode reference to Settings > BareTOC.
+- Added matching toggle behavior for regular content and reusable page-builder templates.
+
+## 1.3.1
+
+- Added automatic support for `[baretoc]` inside reusable page-builder and single-post templates.
+- Added a lightweight rendered-page fallback that loads only when the shortcode runs outside normal post content.
+- Kept template TOCs hidden when fewer than the configured minimum headings are present.
+- Added the optional `container` shortcode attribute for limiting template heading discovery.
+
 ## 1.3.0
 
 - Added native WordPress dashboard update checks through the SiteFueler Update API.

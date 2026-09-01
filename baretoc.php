@@ -3,7 +3,7 @@
  * Plugin Name:       BareTOC – Lightweight Table of Contents
  * Plugin URI:        https://sitefueler.com/baretoc/
  * Description:       A lightweight, unstyled, and SEO-friendly table of contents for WordPress.
- * Version:           1.3.0
+ * Version:           1.3.2
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            SiteFueler
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BARETOC_VERSION', '1.3.0' );
+define( 'BARETOC_VERSION', '1.3.2' );
 define( 'BARETOC_FILE', __FILE__ );
 define( 'BARETOC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BARETOC_URL', plugin_dir_url( __FILE__ ) );

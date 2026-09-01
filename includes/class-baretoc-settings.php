@@ -267,6 +267,33 @@ final class BareTOC_Settings {
 					</table>
 				</section>
 
+				<section class="baretoc-settings__section" aria-labelledby="baretoc-shortcode-reference">
+					<h2 id="baretoc-shortcode-reference"><?php esc_html_e( 'Shortcode reference', 'baretoc' ); ?></h2>
+					<p><?php esc_html_e( 'Copy a shortcode below into a post, page, widget, or reusable page-builder template.', 'baretoc' ); ?></p>
+					<div class="baretoc-shortcode-examples">
+						<p><strong><?php esc_html_e( 'Global defaults', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc]' ); ?></code></p>
+						<p><strong><?php esc_html_e( 'Custom headings and list', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc headings="h2,h3" title="On this page" list="bullets"]' ); ?></code></p>
+						<p><strong><?php esc_html_e( 'Reusable template with automatic hiding', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc minimum="3" container=".entry-content"]' ); ?></code></p>
+						<p><strong><?php esc_html_e( 'Open and close control', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc toggle="yes"]' ); ?></code></p>
+						<p><strong><?php esc_html_e( 'Open and close control, initially closed', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc toggle="yes" initial="closed"]' ); ?></code></p>
+					</div>
+					<p class="description"><strong><?php esc_html_e( 'Toggle behavior is shortcode-only.', 'baretoc' ); ?></strong> <?php esc_html_e( 'Without toggle="yes", the table of contents stays open and no open/close control or toggle script is added.', 'baretoc' ); ?></p>
+					<table class="widefat striped baretoc-shortcode-attributes">
+						<thead><tr><th><?php esc_html_e( 'Attribute', 'baretoc' ); ?></th><th><?php esc_html_e( 'Purpose', 'baretoc' ); ?></th></tr></thead>
+						<tbody>
+							<tr><td><code>headings</code></td><td><?php esc_html_e( 'Heading levels such as h2,h3,h4.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>title</code></td><td><?php esc_html_e( 'Visible title; use an empty value to hide it.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>list</code></td><td><?php esc_html_e( 'numbered, bullets, or none.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>clean_numbers</code></td><td><?php esc_html_e( 'yes or no for duplicate-number cleanup.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>minimum</code></td><td><?php esc_html_e( 'Hide the TOC below this matching-heading count.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>title_element</code></td><td><?php esc_html_e( 'div, p, h2, or h3.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>container</code></td><td><?php esc_html_e( 'Optional CSS selector limiting template-mode heading discovery.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>toggle</code></td><td><?php esc_html_e( 'Set to yes to add the open and close control.', 'baretoc' ); ?></td></tr>
+							<tr><td><code>initial</code></td><td><?php esc_html_e( 'open or closed; applies only when toggle is enabled.', 'baretoc' ); ?></td></tr>
+						</tbody>
+					</table>
+				</section>
+
 				<section class="baretoc-settings__section" aria-labelledby="baretoc-integrations-settings">
 					<h2 id="baretoc-integrations-settings"><?php esc_html_e( 'Integrations', 'baretoc' ); ?></h2>
 					<p><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span> <?php esc_html_e( 'Rank Math table-of-contents detection is enabled automatically.', 'baretoc' ); ?></p>

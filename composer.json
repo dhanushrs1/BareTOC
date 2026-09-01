@@ -33,7 +33,11 @@
             "php tests/smoke.php",
             "php tests/updater.php"
         ],
-        "test:js": "node --check assets/js/smooth-scroll.js",
+		"test:js": [
+			"node --check assets/js/smooth-scroll.js",
+			"node --check assets/js/template-toc.js",
+			"node --check assets/js/toggle.js"
+		],
         "check": [
             "@test",
             "@lint",

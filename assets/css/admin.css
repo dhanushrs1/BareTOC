@@ -27,3 +27,32 @@
 .baretoc-levels label {
 	white-space: nowrap;
 }
+
+.baretoc-shortcode-examples {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	margin-block: 16px;
+}
+
+.baretoc-shortcode-examples p {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin: 0;
+	padding: 12px;
+}
+
+.baretoc-shortcode-examples code {
+	display: inline-block;
+	margin-block-start: 6px;
+	user-select: all;
+}
+
+.baretoc-shortcode-attributes {
+	margin-block: 16px 10px;
+}
+
+.baretoc-shortcode-attributes td:first-child {
+	width: 150px;
+}
