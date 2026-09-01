@@ -64,6 +64,10 @@ function get_option( $name, $default = false ) {
 	return isset( $GLOBALS['baretoc_test_option'] ) ? $GLOBALS['baretoc_test_option'] : $default;
 }
 
+function get_permalink() {
+	return 'https://example.com/article/';
+}
+
 function metadata_exists() {
 	return false;
 }
@@ -181,7 +185,7 @@ $render_args                 = BareTOC_Settings::defaults();
 $render_args['minimum_headings'] = 1;
 $output                      = $renderer->render( $parsed['headings'], $render_args );
 
-foreach ( array( '<nav class="baretoc"', 'aria-label="Table of contents"', 'baretoc-sublist', 'href="#kept"' ) as $needle ) {
+foreach ( array( '<nav class="baretoc"', 'aria-label="Table of contents"', 'baretoc-sublist', 'href="#kept"', 'type="application/ld+json"', '"@type":"ItemList"', '"numberOfItems":4', 'https:\/\/example.com\/article\/#intro-2' ) as $needle ) {
 	if ( false === strpos( $output, $needle ) ) {
 		baretoc_test_fail( 'Missing renderer output ' . $needle );
 	}
@@ -201,14 +205,18 @@ $toggle_args['initially_open']   = false;
 $toggle_args['smooth_toggle']    = true;
 $toggle_output                   = $renderer->render( $parsed['headings'], $toggle_args );
 
-foreach ( array( 'baretoc--collapsible', 'baretoc--smooth-toggle', 'class="baretoc-toggle"', 'data-baretoc-initial="closed"', 'data-baretoc-smooth="yes"', 'baretoc-toggle-icon--open', 'baretoc-toggle-icon--close' ) as $needle ) {
+foreach ( array( 'baretoc--collapsible', 'baretoc--smooth-toggle', 'class="baretoc-header baretoc-toggle"', 'role="button"', 'tabindex="0"', 'data-baretoc-initial="closed"', 'data-baretoc-smooth="yes"', 'class="baretoc-toggle-icon"', 'baretoc-toggle-icon__vertical' ) as $needle ) {
 	if ( false === strpos( $toggle_output, $needle ) ) {
 		baretoc_test_fail( 'Collapsible renderer output missing ' . $needle );
 	}
 }
 
-if ( false === strpos( $toggle_output, '<div class="baretoc-header"><div class="baretoc-title">Table of Contents</div><button class="baretoc-toggle"' ) ) {
-	baretoc_test_fail( 'Collapsible output did not keep the title and control inside the header container.' );
+if ( false === strpos( $toggle_output, '<div class="baretoc-header baretoc-toggle" role="button"' ) ) {
+	baretoc_test_fail( 'The collapsible header was not rendered as the single disclosure trigger.' );
+}
+
+if ( false !== strpos( $toggle_output, '<button' ) || false !== strpos( $toggle_output, '<span class="baretoc-toggle-icon' ) ) {
+	baretoc_test_fail( 'Collapsible output unexpectedly contains a separate button or duplicate icon wrapper.' );
 }
 
 $minimum_args                     = $render_args;

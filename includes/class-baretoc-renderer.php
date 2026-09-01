@@ -104,22 +104,24 @@ final class BareTOC_Renderer {
 		$title_element = isset( $args['title_element'] ) ? $args['title_element'] : 'div';
 		$title_element = in_array( $title_element, array( 'div', 'p', 'h2', 'h3' ), true ) ? $title_element : 'div';
 
-		$output = '<nav class="' . esc_attr( implode( ' ', $classes ) ) . '" aria-label="' . esc_attr__( 'Table of contents', 'baretoc' ) . '">';
-		$list   = $this->render_list( $tree, $list_tag, $list_style, true );
+		$output            = '<nav class="' . esc_attr( implode( ' ', $classes ) ) . '" aria-label="' . esc_attr__( 'Table of contents', 'baretoc' ) . '">';
+		$list              = $this->render_list( $tree, $list_tag, $list_style, true );
+		$header_attributes = 'class="baretoc-header"';
 
-		$output .= '<div class="baretoc-header">';
+		if ( $collapsible ) {
+			$content_id        = wp_unique_id( 'baretoc-content-' );
+			$initial_state     = ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ) ? 'open' : 'closed';
+			$header_attributes = 'class="baretoc-header baretoc-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-baretoc-smooth="' . ( $smooth_toggle ? 'yes' : 'no' ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '"';
+		}
+
+		$output .= '<div ' . $header_attributes . '>';
 
 		if ( '' !== $title ) {
 			$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
 		}
 
 		if ( $collapsible ) {
-			$content_id    = wp_unique_id( 'baretoc-content-' );
-			$initial_state = ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ) ? 'open' : 'closed';
-
-			$output .= '<button class="baretoc-toggle" type="button" hidden aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-baretoc-smooth="' . ( $smooth_toggle ? 'yes' : 'no' ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '">';
-			$output .= $this->render_toggle_icons();
-			$output .= '</button>';
+			$output .= $this->render_toggle_icon();
 		}
 
 		$output .= '</div>';
@@ -130,6 +132,7 @@ final class BareTOC_Renderer {
 			$output .= $list;
 		}
 
+		$output .= $this->render_schema( $selected, $title );
 		$output .= '</nav>';
 
 		/**
@@ -143,22 +146,72 @@ final class BareTOC_Renderer {
 	}
 
 	/**
-	 * Returns the user-supplied open and close icons for the disclosure button.
+	 * Returns one decorative disclosure icon for the interactive header.
 	 *
-	 * The plus icon represents the action to open a closed TOC. The minus icon
-	 * represents the action to close an open TOC.
+	 * CSS hides the vertical line while expanded, changing the plus into a minus
+	 * without duplicating icon markup.
 	 *
 	 * @return string
 	 */
-	private function render_toggle_icons() {
-		$output  = '<span class="baretoc-toggle-icon baretoc-toggle-icon--open" hidden>';
-		$output .= '<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="128" y1="88" x2="128" y2="168" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
-		$output .= '</span>';
-		$output .= '<span class="baretoc-toggle-icon baretoc-toggle-icon--close">';
-		$output .= '<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
-		$output .= '</span>';
+	private function render_toggle_icon() {
+		return '<svg class="baretoc-toggle-icon" aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line class="baretoc-toggle-icon__vertical" x1="128" y1="88" x2="128" y2="168" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
+	}
 
-		return $output;
+	/**
+	 * Renders a machine-readable ItemList for search engines and other consumers.
+	 *
+	 * @param array<int,array{level:int,id:string,title:string}> $headings Selected headings.
+	 * @param string                                             $title    Visible TOC title.
+	 * @return string
+	 */
+	private function render_schema( $headings, $title ) {
+		$base_url  = '';
+		$permalink = function_exists( 'get_permalink' ) ? get_permalink() : '';
+
+		if ( is_string( $permalink ) && '' !== $permalink ) {
+			$base_url = (string) preg_replace( '/#.*$/', '', $permalink );
+		}
+
+		$items = array();
+
+		foreach ( $headings as $position => $heading ) {
+			$items[] = array(
+				'@type'    => 'ListItem',
+				'position' => $position + 1,
+				'name'     => (string) $heading['title'],
+				'url'      => $base_url . '#' . rawurlencode( (string) $heading['id'] ),
+			);
+		}
+
+		$schema = array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'ItemList',
+			'name'            => '' !== $title ? $title : __( 'Table of contents', 'baretoc' ),
+			'itemListOrder'   => 'https://schema.org/ItemListOrderAscending',
+			'numberOfItems'   => count( $items ),
+			'itemListElement' => $items,
+		);
+
+		/**
+		 * Filters the Schema.org ItemList generated for the TOC.
+		 *
+		 * Return a non-array value to omit the JSON-LD block.
+		 *
+		 * @param array<string,mixed>                              $schema   ItemList data.
+		 * @param array<int,array{level:int,id:string,title:string}> $headings Selected headings.
+		 * @param string                                           $title    Visible TOC title.
+		 */
+		$schema = apply_filters( 'baretoc_schema', $schema, $headings, $title );
+
+		if ( ! is_array( $schema ) ) {
+			return '';
+		}
+
+		$json = wp_json_encode( $schema );
+
+		return is_string( $json ) && '' !== $json
+			? '<script class="baretoc-schema" type="application/ld+json">' . $json . '</script>'
+			: '';
 	}
 
 	/**

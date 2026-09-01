@@ -3,8 +3,10 @@
 ## 1.3.4
 
 - Kept the TOC title inside `.baretoc-header` whether or not the shortcode toggle is enabled.
+- Made the complete header the accessible open/close trigger, with one SVG switching between plus and minus.
 - Added the three lightweight header flex declarations as default structural CSS.
 - Matched server-rendered and reusable-template header markup.
+- Added Schema.org `ItemList` JSON-LD for every generated TOC.
 
 ## 1.3.3
 

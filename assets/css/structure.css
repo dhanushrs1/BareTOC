@@ -3,3 +3,7 @@
 	align-items: center;
 	justify-content: space-between;
 }
+
+.baretoc-toggle[aria-expanded="true"] .baretoc-toggle-icon__vertical {
+	display: none;
+}
