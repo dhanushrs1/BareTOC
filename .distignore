@@ -10,6 +10,7 @@
 /SECURITY.md
 /composer.json
 /composer.lock
+/docs
 /phpcs.xml.dist
 /tests
 /vendor

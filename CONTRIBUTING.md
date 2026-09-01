@@ -28,6 +28,8 @@ The smoke test is self-contained and does not require a running WordPress databa
 3. Follow the WordPress PHP coding standards and preserve PHP 7.4 compatibility.
 4. Add or update smoke coverage when behavior changes.
 5. Update `README.md`, `readme.txt`, and `CHANGELOG.md` for user-facing changes.
-6. Verify that no frontend dependency, external request, inline style, or unnecessary asset has been introduced.
+6. Verify that no frontend dependency, frontend external request, inline style, or unnecessary asset has been introduced.
+
+Maintainers should follow [docs/RELEASING.md](docs/RELEASING.md) when publishing a version to GitHub and the SiteFueler Update API.
 
 By contributing, you agree that your contribution is licensed under GPL-2.0-or-later, the same license as BareTOC.

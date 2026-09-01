@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- Added native WordPress dashboard update checks through the SiteFueler Update API.
+- Added validation for release identity, HTTPS download hosts, signed download parameters, and canonical ZIP layout.
+- Added six-hour network-wide metadata caching with automatic invalidation after upgrades.
+- Added optional access-key, API endpoint, and stable/beta channel developer controls.
+
 ## 1.2.1
 
 - Refined the optional minimal stylesheet with a neutral card surface, balanced spacing, and polished links.

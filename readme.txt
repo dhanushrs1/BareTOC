@@ -4,7 +4,7 @@ Tags: table of contents, toc, headings, anchors, seo
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,8 +30,9 @@ Core features:
 * Optionally enable smooth scrolling that respects reduced-motion preferences.
 * Let Rank Math recognize BareTOC automatically.
 * Opt into a tiny structural stylesheet, or load no plugin CSS at all.
+* Receive future BareTOC releases through the native WordPress update dashboard.
 
-BareTOC makes no external requests, performs no frontend AJAX, and uses no icon or font libraries. Its small dependency-free script loads only when smooth scrolling is enabled and a TOC is rendered.
+BareTOC performs no frontend external requests or AJAX and uses no icon or font libraries. WordPress background and administrator update checks contact the SiteFueler Update API over HTTPS. These checks send the installed BareTOC, WordPress, and PHP versions and the selected release channel; they do not send the site's URL. Valid metadata is cached for six hours.
 
 == Installation ==
 
@@ -89,7 +90,17 @@ Yes. It is disabled by default and can be enabled or disabled under Settings > B
 
 Smart numbering cleanup prevents the list marker and a number already written into the heading from appearing together. For example, the heading "2. Installation" is displayed as "Installation" inside an ordered list, where the list supplies the number. The original heading and its anchor are never changed. Disable the option under Settings > BareTOC or use `[baretoc clean_numbers="no"]` to retain the complete label.
 
+= How are plugin updates delivered? =
+
+BareTOC uses WordPress's native update system. During normal dashboard or background update checks, it requests signed release metadata from the SiteFueler Update API. Available releases appear on the Plugins and Updates screens and install through WordPress's standard updater. Sites upgrading from a version earlier than 1.3.0 must install version 1.3.0 manually once; later releases can then be installed from the dashboard.
+
 == Changelog ==
+
+= 1.3.0 =
+
+* Added native WordPress dashboard updates through the SiteFueler Update API.
+* Validated release identity, HTTPS hosts, signed download parameters, and ZIP layout before installation.
+* Added six-hour metadata caching and cache invalidation after upgrades.
 
 = 1.2.1 =
 
