@@ -21,30 +21,32 @@
 }
 
 .baretoc-toggle {
-	align-items: center;
 	background: transparent;
 	border: 0;
 	color: inherit;
 	cursor: pointer;
-	display: inline-flex;
-	flex: 0 0 auto;
-	justify-content: center;
-	line-height: 1;
+	font: inherit;
 	padding: 0.2rem;
+	text-align: inherit;
+	width: 100%;
 }
 
-.baretoc-toggle:hover,
-.baretoc-toggle:focus-visible {
+.baretoc-toggle:hover .baretoc-toggle-icon,
+.baretoc-toggle:focus-visible .baretoc-toggle-icon {
 	opacity: 0.72;
 }
 
-.baretoc-toggle-icon,
-.baretoc-toggle-icon svg {
-	display: block;
+.baretoc-toggle:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
 
-.baretoc-content[hidden],
-.baretoc-toggle-icon[hidden] {
+.baretoc-toggle-icon {
+	display: block;
+	flex: 0 0 auto;
+}
+
+.baretoc-content[hidden] {
 	display: none;
 }
 

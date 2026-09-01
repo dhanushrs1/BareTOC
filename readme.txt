@@ -25,13 +25,14 @@ Core features:
 * Choose numbered, bullet, or theme-controlled no-marker lists.
 * Prevent duplicated numbering such as "2. 2. Installation" without altering headings.
 * Set a title, title element, and minimum heading count.
-* Opt into shortcode-only open and close controls with accessible plus and minus icons.
+* Opt into a shortcode-only full-header open and close trigger with one accessible plus/minus icon.
 * Optionally animate opening and closing with a global reduced-motion-aware setting.
 * Use shortcode-only placement or automatic insertion.
 * Disable BareTOC or override heading levels on an individual post.
 * Exclude a heading with the `baretoc-ignore` or `no-toc` class.
 * Optionally enable smooth scrolling that respects reduced-motion preferences.
 * Let Rank Math recognize BareTOC automatically.
+* Describe every generated TOC with Schema.org ItemList JSON-LD.
 * Get consistent title/control alignment with three tiny structural CSS rules, and optionally enable minimal appearance CSS.
 * Receive future BareTOC releases through the native WordPress update dashboard.
 
@@ -82,7 +83,7 @@ No. Existing IDs are always preserved. Generated IDs are only added when an incl
 
 = Does it add schema markup? =
 
-No special TOC schema is needed. BareTOC outputs semantic `<nav>` markup, a descriptive `aria-label`, and crawlable fragment links.
+Yes. BareTOC combines semantic `<nav>` markup, a descriptive `aria-label`, crawlable fragment links, and a Schema.org `ItemList` JSON-LD block. This gives search engines a clear machine-readable representation of the page navigation, but does not guarantee a special search-result presentation.
 
 = Does the "None" list mode require CSS? =
 
@@ -115,8 +116,10 @@ BareTOC uses WordPress's native update system. During normal dashboard or backgr
 = 1.3.4 =
 
 * Kept the title inside the header container whether or not the shortcode toggle is enabled.
+* Made the complete header the accessible toggle trigger and simplified the two icon wrappers to one SVG.
 * Added the lightweight header flex alignment by default while keeping appearance CSS optional.
 * Matched the server and reusable-template markup structure.
+* Added Schema.org ItemList JSON-LD for generated TOCs.
 
 = 1.3.3 =
 

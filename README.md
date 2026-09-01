@@ -6,7 +6,7 @@
 
 BareTOC is a standalone SiteFueler WordPress plugin that creates a clean, semantic table of contents from post headings.
 
-Its rule is simple: the plugin owns structure; the active theme owns design. Regular post-content use has no CSS, no JavaScript, no external requests, and no additional database query by default. A small local script loads only when a page-builder template needs rendered-page heading discovery, smooth scrolling is enabled, or a shortcode explicitly enables the toggle.
+Its rule is simple: the plugin owns structure; the active theme owns design. Regular post-content use has no appearance CSS, no JavaScript, no external requests, and no additional database query by default. A tiny structural header rule is always included. A small local script loads only when a page-builder template needs rendered-page heading discovery, smooth scrolling is enabled, or a shortcode explicitly enables the toggle.
 
 ## Features
 
@@ -19,12 +19,12 @@ Its rule is simple: the plugin owns structure; the active theme owns design. Reg
 - numbered, bulleted, and marker-free list modes
 - smart removal of duplicate heading numbers from TOC labels
 - configurable title and minimum heading count
-- optional shortcode-only open and close control with accessible plus/minus icons
+- optional shortcode-only full-header open and close trigger with one accessible plus/minus icon
 - optional global smooth open/close animation that respects reduced-motion preferences
 - shortcode-only, before-content, after-first-paragraph, and before-first-heading placement
 - per-post disable switch and heading-level override
 - `.baretoc-ignore` and `.no-toc` opt-out classes
-- semantic `<nav>` output and native anchor navigation
+- semantic `<nav>` output, native anchor navigation, and Schema.org `ItemList` JSON-LD
 - optional smooth scrolling that respects reduced-motion preferences
 - automatic Rank Math detection
 - optional lightweight neutral design with hierarchical numbering; disabled by default

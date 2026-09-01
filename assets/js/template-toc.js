@@ -3,7 +3,7 @@
 
 	var selector = '.baretoc-runtime[data-baretoc-config]';
 	var runtimeId = 0;
-	var toggleIcons = '<span class="baretoc-toggle-icon baretoc-toggle-icon--open"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="128" y1="88" x2="128" y2="168" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg></span><span class="baretoc-toggle-icon baretoc-toggle-icon--close"><svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg></span>';
+	var toggleIcon = '<svg class="baretoc-toggle-icon" aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><line x1="88" y1="128" x2="168" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line class="baretoc-toggle-icon__vertical" x1="128" y1="88" x2="128" y2="168" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>';
 
 	function parseConfig(placeholder) {
 		try {
@@ -150,6 +150,31 @@
 		return list;
 	}
 
+	function appendSchema(nav, headings, config) {
+		var baseUrl = window.location.href.split('#')[0];
+		var schema = {
+			'@context': 'https://schema.org',
+			'@type': 'ItemList',
+			name: config.title || config.ariaLabel || 'Table of contents',
+			itemListOrder: 'https://schema.org/ItemListOrderAscending',
+			numberOfItems: headings.length,
+			itemListElement: headings.map(function (heading, index) {
+				return {
+					'@type': 'ListItem',
+					position: index + 1,
+					name: heading.title,
+					url: baseUrl + '#' + encodeURIComponent(heading.id)
+				};
+			})
+		};
+		var script = document.createElement('script');
+
+		script.className = 'baretoc-schema';
+		script.type = 'application/ld+json';
+		script.textContent = JSON.stringify(schema);
+		nav.appendChild(script);
+	}
+
 	function appendTitle(parent, config) {
 		var title;
 
@@ -176,26 +201,23 @@
 	function appendCollapsibleContent(nav, list, config) {
 		var header = appendHeader(nav, config);
 		var content = document.createElement('div');
-		var button = document.createElement('button');
 		var expanded = config.initiallyOpen !== false;
 
 		runtimeId += 1;
 		content.className = 'baretoc-content';
 		content.id = 'baretoc-content-runtime-' + runtimeId;
-		button.className = 'baretoc-toggle';
-		button.type = 'button';
-		button.setAttribute('aria-controls', content.id);
-		button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-		button.setAttribute('aria-label', expanded ? config.closeLabel : config.openLabel);
-		button.setAttribute('data-baretoc-initial', expanded ? 'open' : 'closed');
-		button.setAttribute('data-baretoc-smooth', config.smoothToggle ? 'yes' : 'no');
-		button.setAttribute('data-open-label', config.openLabel || 'Open table of contents');
-		button.setAttribute('data-close-label', config.closeLabel || 'Close table of contents');
-		button.innerHTML = toggleIcons;
-		button.querySelector('.baretoc-toggle-icon--open').hidden = expanded;
-		button.querySelector('.baretoc-toggle-icon--close').hidden = !expanded;
+		header.classList.add('baretoc-toggle');
+		header.setAttribute('role', 'button');
+		header.setAttribute('tabindex', '0');
+		header.setAttribute('aria-controls', content.id);
+		header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+		header.setAttribute('aria-label', expanded ? config.closeLabel : config.openLabel);
+		header.setAttribute('data-baretoc-initial', expanded ? 'open' : 'closed');
+		header.setAttribute('data-baretoc-smooth', config.smoothToggle ? 'yes' : 'no');
+		header.setAttribute('data-open-label', config.openLabel || 'Open table of contents');
+		header.setAttribute('data-close-label', config.closeLabel || 'Close table of contents');
+		header.insertAdjacentHTML('beforeend', toggleIcon);
 		content.hidden = !expanded;
-		header.appendChild(button);
 		content.appendChild(list);
 		nav.appendChild(content);
 	}
@@ -232,6 +254,8 @@
 			appendHeader(nav, config);
 			nav.appendChild(list);
 		}
+
+		appendSchema(nav, headings, config);
 
 		placeholder.replaceWith(nav);
 	}

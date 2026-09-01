@@ -3,36 +3,26 @@
 
 	var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
 
-	function updateControl(button, expanded) {
-		var openIcon = button.querySelector('.baretoc-toggle-icon--open');
-		var closeIcon = button.querySelector('.baretoc-toggle-icon--close');
-		var openLabel = button.getAttribute('data-open-label') || 'Open table of contents';
-		var closeLabel = button.getAttribute('data-close-label') || 'Close table of contents';
+	function updateControl(trigger, expanded) {
+		var openLabel = trigger.getAttribute('data-open-label') || 'Open table of contents';
+		var closeLabel = trigger.getAttribute('data-close-label') || 'Close table of contents';
 
-		button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-		button.setAttribute('aria-label', expanded ? closeLabel : openLabel);
-
-		if (openIcon) {
-			openIcon.hidden = expanded;
-		}
-
-		if (closeIcon) {
-			closeIcon.hidden = !expanded;
-		}
+		trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+		trigger.setAttribute('aria-label', expanded ? closeLabel : openLabel);
 	}
 
-	function setState(button, content, expanded) {
-		updateControl(button, expanded);
+	function setState(trigger, content, expanded) {
+		updateControl(trigger, expanded);
 		content.hidden = !expanded;
 	}
 
-	function animateState(button, content, expanded) {
+	function animateState(trigger, content, expanded) {
 		var startHeight;
 		var endHeight;
 		var animation;
 
-		if (button.getAttribute('data-baretoc-smooth') !== 'yes' || typeof content.animate !== 'function' || (reducedMotion && reducedMotion.matches)) {
-			setState(button, content, expanded);
+		if (trigger.getAttribute('data-baretoc-smooth') !== 'yes' || typeof content.animate !== 'function' || (reducedMotion && reducedMotion.matches)) {
+			setState(trigger, content, expanded);
 			return;
 		}
 
@@ -45,8 +35,8 @@
 			endHeight = 0;
 		}
 
-		updateControl(button, expanded);
-		button.disabled = true;
+		updateControl(trigger, expanded);
+		trigger.setAttribute('aria-disabled', 'true');
 		content.style.overflow = 'hidden';
 		animation = content.animate(
 			[
@@ -58,53 +48,66 @@
 		animation.onfinish = function () {
 			content.hidden = !expanded;
 			content.style.removeProperty('overflow');
-			button.disabled = false;
+			trigger.removeAttribute('aria-disabled');
 		};
 	}
 
-	function contentFor(button) {
-		var contentId = button.getAttribute('aria-controls');
+	function contentFor(trigger) {
+		var contentId = trigger.getAttribute('aria-controls');
 
 		return contentId ? document.getElementById(contentId) : null;
 	}
 
-	function initialize(button) {
-		var content = contentFor(button);
+	function initialize(trigger) {
+		var content = contentFor(trigger);
 
 		if (!content) {
 			return;
 		}
 
-		setState(button, content, button.getAttribute('data-baretoc-initial') !== 'closed');
-		button.hidden = false;
+		setState(trigger, content, trigger.getAttribute('data-baretoc-initial') !== 'closed');
 	}
 
 	function initializeAll() {
 		document.querySelectorAll('.baretoc-toggle').forEach(initialize);
 	}
 
-	document.addEventListener('click', function (event) {
-		var source = event.target;
-		var button;
+	function activate(source) {
+		var trigger;
 		var content;
 
 		if (!(source instanceof Element)) {
 			return;
 		}
 
-		button = source.closest('.baretoc-toggle');
+		trigger = source.closest('.baretoc-toggle');
 
-		if (!button) {
+		if (!trigger || trigger.getAttribute('aria-disabled') === 'true') {
 			return;
 		}
 
-		content = contentFor(button);
+		content = contentFor(trigger);
 
 		if (!content) {
 			return;
 		}
 
-		animateState(button, content, button.getAttribute('aria-expanded') !== 'true');
+		animateState(trigger, content, trigger.getAttribute('aria-expanded') !== 'true');
+	}
+
+	document.addEventListener('click', function (event) {
+		activate(event.target);
+	});
+
+	document.addEventListener('keydown', function (event) {
+		if (event.key !== 'Enter' && event.key !== ' ') {
+			return;
+		}
+
+		if (event.target instanceof Element && event.target.closest('.baretoc-toggle')) {
+			event.preventDefault();
+			activate(event.target);
+		}
 	});
 
 	if (document.readyState === 'loading') {
