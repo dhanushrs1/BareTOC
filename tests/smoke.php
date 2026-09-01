@@ -10,7 +10,7 @@
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc.php' );
 define( 'BARETOC_URL', 'https://example.com/wp-content/plugins/baretoc/' );
-define( 'BARETOC_VERSION', '1.3.3' );
+define( 'BARETOC_VERSION', '1.3.4' );
 
 /** Minimal WordPress function doubles needed by the isolated smoke test. */
 function __( $text ) {
@@ -187,6 +187,10 @@ foreach ( array( '<nav class="baretoc"', 'aria-label="Table of contents"', 'bare
 	}
 }
 
+if ( false === strpos( $output, '<div class="baretoc-header"><div class="baretoc-title">Table of Contents</div></div><ol' ) ) {
+	baretoc_test_fail( 'Default output did not keep the title inside the header container.' );
+}
+
 if ( false !== strpos( $output, 'baretoc-toggle' ) ) {
 	baretoc_test_fail( 'Default output unexpectedly contains the shortcode-only toggle.' );
 }
@@ -201,6 +205,10 @@ foreach ( array( 'baretoc--collapsible', 'baretoc--smooth-toggle', 'class="baret
 	if ( false === strpos( $toggle_output, $needle ) ) {
 		baretoc_test_fail( 'Collapsible renderer output missing ' . $needle );
 	}
+}
+
+if ( false === strpos( $toggle_output, '<div class="baretoc-header"><div class="baretoc-title">Table of Contents</div><button class="baretoc-toggle"' ) ) {
+	baretoc_test_fail( 'Collapsible output did not keep the title and control inside the header container.' );
 }
 
 $minimum_args                     = $render_args;
@@ -269,9 +277,19 @@ $GLOBALS['baretoc_test_option'] = array_merge(
 	)
 );
 $GLOBALS['baretoc_test_scripts'] = array();
+$GLOBALS['baretoc_test_styles']  = array();
 $assets                          = new BareTOC_Shortcode( $parser, $renderer, new BareTOC_Settings() );
+$assets->enqueue_frontend_assets();
 $asset_placeholder               = $assets->shortcode( array( 'minimum' => '1' ) );
 $assets->filter_content( $asset_placeholder . '<h2>Assets</h2>' );
+
+if ( ! in_array( 'baretoc-structure', $GLOBALS['baretoc_test_styles'], true ) ) {
+	baretoc_test_fail( 'Default structural header CSS was not enqueued.' );
+}
+
+if ( in_array( 'baretoc', $GLOBALS['baretoc_test_styles'], true ) ) {
+	baretoc_test_fail( 'Optional appearance CSS was unexpectedly enqueued by default.' );
+}
 
 if ( ! in_array( 'baretoc-smooth-scroll', $GLOBALS['baretoc_test_scripts'], true ) ) {
 	baretoc_test_fail( 'Enabled smooth scrolling did not enqueue its script.' );
@@ -281,7 +299,7 @@ if ( in_array( 'baretoc-toggle', $GLOBALS['baretoc_test_scripts'], true ) ) {
 	baretoc_test_fail( 'Default shortcode unexpectedly enqueued the toggle script.' );
 }
 
-unset( $GLOBALS['baretoc_test_option'], $GLOBALS['baretoc_test_scripts'] );
+unset( $GLOBALS['baretoc_test_option'], $GLOBALS['baretoc_test_scripts'], $GLOBALS['baretoc_test_styles'] );
 
 $shortcode   = new BareTOC_Shortcode( $parser, $renderer, $settings );
 $placeholder = $shortcode->shortcode(

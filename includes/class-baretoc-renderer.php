@@ -107,25 +107,26 @@ final class BareTOC_Renderer {
 		$output = '<nav class="' . esc_attr( implode( ' ', $classes ) ) . '" aria-label="' . esc_attr__( 'Table of contents', 'baretoc' ) . '">';
 		$list   = $this->render_list( $tree, $list_tag, $list_style, true );
 
+		$output .= '<div class="baretoc-header">';
+
+		if ( '' !== $title ) {
+			$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
+		}
+
 		if ( $collapsible ) {
 			$content_id    = wp_unique_id( 'baretoc-content-' );
 			$initial_state = ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ) ? 'open' : 'closed';
 
-			$output .= '<div class="baretoc-header">';
-
-			if ( '' !== $title ) {
-				$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
-			}
-
 			$output .= '<button class="baretoc-toggle" type="button" hidden aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-baretoc-smooth="' . ( $smooth_toggle ? 'yes' : 'no' ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '">';
 			$output .= $this->render_toggle_icons();
-			$output .= '</button></div>';
+			$output .= '</button>';
+		}
+
+		$output .= '</div>';
+
+		if ( $collapsible ) {
 			$output .= '<div id="' . esc_attr( $content_id ) . '" class="baretoc-content">' . $list . '</div>';
 		} else {
-			if ( '' !== $title ) {
-				$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
-			}
-
 			$output .= $list;
 		}
 

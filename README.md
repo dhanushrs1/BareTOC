@@ -75,7 +75,17 @@ No browser-side or frontend asset makes an update request. Sites running a versi
 
 ## Styling API
 
-BareTOC adds no appearance CSS by default. Themes can target:
+BareTOC adds no appearance CSS by default. It always loads only the following structural header alignment so the title and optional toggle control share one row:
+
+```css
+.baretoc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+```
+
+Themes can target:
 
 ```css
 .baretoc {}

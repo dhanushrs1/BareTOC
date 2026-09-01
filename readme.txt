@@ -4,7 +4,7 @@ Tags: table of contents, toc, headings, anchors, seo
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ Core features:
 * Exclude a heading with the `baretoc-ignore` or `no-toc` class.
 * Optionally enable smooth scrolling that respects reduced-motion preferences.
 * Let Rank Math recognize BareTOC automatically.
-* Opt into a tiny structural stylesheet, or load no plugin CSS at all.
+* Get consistent title/control alignment with three tiny structural CSS rules, and optionally enable minimal appearance CSS.
 * Receive future BareTOC releases through the native WordPress update dashboard.
 
 BareTOC performs no frontend external requests or AJAX and uses no icon or font libraries. WordPress background and administrator update checks contact the SiteFueler Update API over HTTPS. These checks send the installed BareTOC, WordPress, and PHP versions and the selected release channel; they do not send the site's URL. Valid metadata is cached for six hours.
@@ -70,7 +70,7 @@ Supported attributes:
 
 = Why is BareTOC unstyled? =
 
-That is intentional. BareTOC emits stable classes and clean HTML so the active theme can control every visual choice. An optional minimal stylesheet is available in Settings > BareTOC.
+That is intentional. BareTOC emits stable classes and clean HTML so the active theme can control every visual choice. Only the three flex declarations needed to align the title and optional control are included by default. An optional minimal appearance stylesheet is available in Settings > BareTOC.
 
 = How do I exclude one heading? =
 
@@ -111,6 +111,12 @@ Smart numbering cleanup prevents the list marker and a number already written in
 BareTOC uses WordPress's native update system. During normal dashboard or background update checks, it requests signed release metadata from the SiteFueler Update API. Available releases appear on the Plugins and Updates screens and install through WordPress's standard updater. Sites upgrading from a version earlier than 1.3.0 must install version 1.3.0 manually once; later releases can then be installed from the dashboard.
 
 == Changelog ==
+
+= 1.3.4 =
+
+* Kept the title inside the header container whether or not the shortcode toggle is enabled.
+* Added the lightweight header flex alignment by default while keeping appearance CSS optional.
+* Matched the server and reusable-template markup structure.
 
 = 1.3.3 =
 
