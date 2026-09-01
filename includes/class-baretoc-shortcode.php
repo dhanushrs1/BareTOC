@@ -278,8 +278,10 @@ final class BareTOC_Shortcode {
 
 		$settings = $this->settings->get();
 
+		wp_enqueue_style( 'baretoc-structure', BARETOC_URL . 'assets/css/structure.css', array(), BARETOC_VERSION );
+
 		if ( 'minimal' === $settings['css'] ) {
-			wp_enqueue_style( 'baretoc', BARETOC_URL . 'assets/css/baretoc.css', array(), BARETOC_VERSION );
+			wp_enqueue_style( 'baretoc', BARETOC_URL . 'assets/css/baretoc.css', array( 'baretoc-structure' ), BARETOC_VERSION );
 		}
 	}
 

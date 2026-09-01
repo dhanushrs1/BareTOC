@@ -163,14 +163,23 @@
 		parent.appendChild(title);
 	}
 
-	function appendCollapsibleContent(nav, list, config) {
+	function appendHeader(nav, config) {
 		var header = document.createElement('div');
+
+		header.className = 'baretoc-header';
+		appendTitle(header, config);
+		nav.appendChild(header);
+
+		return header;
+	}
+
+	function appendCollapsibleContent(nav, list, config) {
+		var header = appendHeader(nav, config);
 		var content = document.createElement('div');
 		var button = document.createElement('button');
 		var expanded = config.initiallyOpen !== false;
 
 		runtimeId += 1;
-		header.className = 'baretoc-header';
 		content.className = 'baretoc-content';
 		content.id = 'baretoc-content-runtime-' + runtimeId;
 		button.className = 'baretoc-toggle';
@@ -186,10 +195,8 @@
 		button.querySelector('.baretoc-toggle-icon--open').hidden = expanded;
 		button.querySelector('.baretoc-toggle-icon--close').hidden = !expanded;
 		content.hidden = !expanded;
-		appendTitle(header, config);
 		header.appendChild(button);
 		content.appendChild(list);
-		nav.appendChild(header);
 		nav.appendChild(content);
 	}
 
@@ -222,7 +229,7 @@
 		if (config.collapsible) {
 			appendCollapsibleContent(nav, list, config);
 		} else {
-			appendTitle(nav, config);
+			appendHeader(nav, config);
 			nav.appendChild(list);
 		}
 

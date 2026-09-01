@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.4
+
+- Kept the TOC title inside `.baretoc-header` whether or not the shortcode toggle is enabled.
+- Added the three lightweight header flex declarations as default structural CSS.
+- Matched server-rendered and reusable-template header markup.
+
 ## 1.3.3
 
 - Added a global, opt-in smooth open/close animation setting for shortcode-enabled TOC drawers.

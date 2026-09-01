@@ -266,9 +266,10 @@ final class BareTOC_Settings {
 							<label><input type="checkbox" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[smooth_toggle]" value="1" <?php checked( $settings['smooth_toggle'] ); ?>> <?php esc_html_e( 'Animate TOC opening and closing', 'baretoc' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Applies only to shortcodes using toggle="yes". Disabled by default and reduced-motion preferences are respected.', 'baretoc' ); ?></p>
 						</td></tr>
-						<tr><th scope="row"><?php esc_html_e( 'Plugin CSS', 'baretoc' ); ?></th><td><fieldset>
-							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="none" <?php checked( $settings['css'], 'none' ); ?>> <?php esc_html_e( 'No plugin CSS (recommended)', 'baretoc' ); ?></label><br>
-							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="minimal" <?php checked( $settings['css'], 'minimal' ); ?>> <?php esc_html_e( 'Minimal structural CSS', 'baretoc' ); ?></label>
+						<tr><th scope="row"><?php esc_html_e( 'Plugin appearance', 'baretoc' ); ?></th><td><fieldset>
+							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="none" <?php checked( $settings['css'], 'none' ); ?>> <?php esc_html_e( 'No appearance CSS (recommended)', 'baretoc' ); ?></label><br>
+							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="minimal" <?php checked( $settings['css'], 'minimal' ); ?>> <?php esc_html_e( 'Minimal appearance CSS', 'baretoc' ); ?></label>
+							<p class="description"><?php esc_html_e( 'The lightweight header alignment is always included.', 'baretoc' ); ?></p>
 						</fieldset></td></tr>
 					</table>
 				</section>
