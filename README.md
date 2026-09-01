@@ -20,6 +20,7 @@ Its rule is simple: the plugin owns structure; the active theme owns design. Reg
 - smart removal of duplicate heading numbers from TOC labels
 - configurable title and minimum heading count
 - optional shortcode-only open and close control with accessible plus/minus icons
+- optional global smooth open/close animation that respects reduced-motion preferences
 - shortcode-only, before-content, after-first-paragraph, and before-first-heading placement
 - per-post disable switch and heading-level override
 - `.baretoc-ignore` and `.no-toc` opt-out classes
@@ -48,7 +49,7 @@ Supported attributes are `headings`, `title`, `list`, `clean_numbers`, `minimum`
 
 The same `[baretoc]` shortcode can be placed once in a page builder's reusable single-post or single-page template. BareTOC detects this context and scans the rendered page. It remains hidden when the page has fewer matching headings than `minimum` (three by default). If the template's main content wrapper is known, use `container` with its CSS selector to exclude headings elsewhere in the template, for example `[baretoc minimum="3" container=".entry-content"]`.
 
-Open and close behavior is deliberately shortcode-only. Use `[baretoc toggle="yes"]` to add the control while starting open, or `[baretoc toggle="yes" initial="closed"]` to start closed. Without `toggle="yes"`, the TOC stays open and neither the control nor its script is added. All supported examples and attributes are also listed under **Settings → BareTOC → Shortcode reference**.
+Open and close behavior is deliberately shortcode-only. Use `[baretoc toggle="yes"]` to add the control while starting open, or `[baretoc toggle="yes" initial="closed"]` to start closed. Without `toggle="yes"`, the TOC stays open and neither the control nor its script is added. Its optional movement is controlled globally under **Settings → BareTOC → Smooth open/close**. All supported examples and attributes are listed under **Settings → BareTOC → Shortcode reference**.
 
 ## Installation
 

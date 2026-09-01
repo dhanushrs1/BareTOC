@@ -179,6 +179,7 @@
 		button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
 		button.setAttribute('aria-label', expanded ? config.closeLabel : config.openLabel);
 		button.setAttribute('data-baretoc-initial', expanded ? 'open' : 'closed');
+		button.setAttribute('data-baretoc-smooth', config.smoothToggle ? 'yes' : 'no');
 		button.setAttribute('data-open-label', config.openLabel || 'Open table of contents');
 		button.setAttribute('data-close-label', config.closeLabel || 'Close table of contents');
 		button.innerHTML = toggleIcons;

@@ -67,15 +67,20 @@ final class BareTOC_Renderer {
 		}
 		unset( $heading );
 
-		$list_style  = isset( $args['list_style'] ) ? $args['list_style'] : 'numbered';
-		$list_style  = in_array( $list_style, array( 'numbered', 'bullets', 'none' ), true ) ? $list_style : 'numbered';
-		$list_tag    = 'numbered' === $list_style ? 'ol' : 'ul';
-		$tree        = $this->build_tree( $selected );
-		$classes     = array( 'baretoc' );
-		$collapsible = ! empty( $args['collapsible'] );
+		$list_style    = isset( $args['list_style'] ) ? $args['list_style'] : 'numbered';
+		$list_style    = in_array( $list_style, array( 'numbered', 'bullets', 'none' ), true ) ? $list_style : 'numbered';
+		$list_tag      = 'numbered' === $list_style ? 'ol' : 'ul';
+		$tree          = $this->build_tree( $selected );
+		$classes       = array( 'baretoc' );
+		$collapsible   = ! empty( $args['collapsible'] );
+		$smooth_toggle = $collapsible && ! empty( $args['smooth_toggle'] );
 
 		if ( $collapsible ) {
 			$classes[] = 'baretoc--collapsible';
+		}
+
+		if ( $smooth_toggle ) {
+			$classes[] = 'baretoc--smooth-toggle';
 		}
 
 		/**
@@ -112,7 +117,7 @@ final class BareTOC_Renderer {
 				$output .= '<' . $title_element . ' class="baretoc-title">' . esc_html( $title ) . '</' . $title_element . '>';
 			}
 
-			$output .= '<button class="baretoc-toggle" type="button" hidden aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '">';
+			$output .= '<button class="baretoc-toggle" type="button" hidden aria-expanded="true" aria-controls="' . esc_attr( $content_id ) . '" aria-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '" data-baretoc-initial="' . esc_attr( $initial_state ) . '" data-baretoc-smooth="' . ( $smooth_toggle ? 'yes' : 'no' ) . '" data-open-label="' . esc_attr__( 'Open table of contents', 'baretoc' ) . '" data-close-label="' . esc_attr__( 'Close table of contents', 'baretoc' ) . '">';
 			$output .= $this->render_toggle_icons();
 			$output .= '</button></div>';
 			$output .= '<div id="' . esc_attr( $content_id ) . '" class="baretoc-content">' . $list . '</div>';
