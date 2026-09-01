@@ -1,0 +1,13 @@
+.baretoc-list--none,
+.baretoc-list--none .baretoc-sublist {
+	list-style: none;
+	padding-inline-start: 0;
+}
+
+.baretoc-sublist {
+	margin-block: 0;
+}
+
+.baretoc-link {
+	text-decoration: inherit;
+}

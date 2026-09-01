@@ -1,0 +1,50 @@
+{
+    "name": "sitefueler/baretoc",
+    "description": "A lightweight, unstyled, and SEO-friendly table of contents for WordPress.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/dhanushrs1/BareTOC",
+    "keywords": [
+        "wordpress",
+        "table of contents",
+        "toc",
+        "accessibility",
+        "seo"
+    ],
+    "authors": [
+        {
+            "name": "SiteFueler",
+            "homepage": "https://sitefueler.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "squizlabs/php_codesniffer": "^3.9",
+        "wp-coding-standards/wpcs": "^3.1"
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "test": "php tests/smoke.php",
+        "test:js": "node --check assets/js/smooth-scroll.js",
+        "check": [
+            "@test",
+            "@lint",
+            "@test:js"
+        ]
+    },
+    "support": {
+        "issues": "https://github.com/dhanushrs1/BareTOC/issues",
+        "source": "https://github.com/dhanushrs1/BareTOC"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    }
+}

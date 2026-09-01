@@ -1,0 +1,29 @@
+.baretoc-settings {
+	max-width: 960px;
+}
+
+.baretoc-settings > .description {
+	font-size: 14px;
+}
+
+.baretoc-settings__section {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	margin-top: 20px;
+	padding: 4px 20px 10px;
+}
+
+.baretoc-settings__section > h2 {
+	border-bottom: 1px solid #dcdcde;
+	padding-bottom: 12px;
+}
+
+.baretoc-levels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+}
+
+.baretoc-levels label {
+	white-space: nowrap;
+}

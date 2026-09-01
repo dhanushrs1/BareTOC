@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement that fits BareTOC's lightweight scope.
+title: "Feature: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Explain the user or developer need, not only an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: BareTOC principles
+      options:
+        - label: The proposal can remain accessible and dependency-free.
+          required: true
+        - label: The proposal leaves visual design to the active theme.
+          required: true
