@@ -10,7 +10,7 @@
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 define( 'BARETOC_FILE', dirname( __DIR__ ) . '/baretoc.php' );
 define( 'BARETOC_URL', 'https://example.com/wp-content/plugins/baretoc/' );
-define( 'BARETOC_VERSION', '1.3.2' );
+define( 'BARETOC_VERSION', '1.3.3' );
 
 /** Minimal WordPress function doubles needed by the isolated smoke test. */
 function __( $text ) {
@@ -194,9 +194,10 @@ if ( false !== strpos( $output, 'baretoc-toggle' ) ) {
 $toggle_args                     = $render_args;
 $toggle_args['collapsible']      = true;
 $toggle_args['initially_open']   = false;
+$toggle_args['smooth_toggle']    = true;
 $toggle_output                   = $renderer->render( $parsed['headings'], $toggle_args );
 
-foreach ( array( 'baretoc--collapsible', 'class="baretoc-toggle"', 'data-baretoc-initial="closed"', 'baretoc-toggle-icon--open', 'baretoc-toggle-icon--close' ) as $needle ) {
+foreach ( array( 'baretoc--collapsible', 'baretoc--smooth-toggle', 'class="baretoc-toggle"', 'data-baretoc-initial="closed"', 'data-baretoc-smooth="yes"', 'baretoc-toggle-icon--open', 'baretoc-toggle-icon--close' ) as $needle ) {
 	if ( false === strpos( $toggle_output, $needle ) ) {
 		baretoc_test_fail( 'Collapsible renderer output missing ' . $needle );
 	}
@@ -250,6 +251,10 @@ if ( true === $sanitized['generate_ids'] ) {
 
 if ( true === $sanitized['smooth_scroll'] ) {
 	baretoc_test_fail( 'Smooth scrolling should remain disabled when unchecked.' );
+}
+
+if ( true === $sanitized['smooth_toggle'] ) {
+	baretoc_test_fail( 'Smooth open/close should remain disabled when unchecked.' );
 }
 
 if ( true === $sanitized['clean_numbering'] ) {
@@ -309,6 +314,12 @@ if ( false === strpos( $unclean_shortcode, '>1. Numbered heading</a>' ) ) {
 
 $GLOBALS['baretoc_test_doing_content_filter'] = false;
 $GLOBALS['baretoc_test_scripts']              = array();
+$GLOBALS['baretoc_test_option']               = array_merge(
+	BareTOC_Settings::defaults(),
+	array(
+		'smooth_toggle' => true,
+	)
+);
 $template_shortcode                           = new BareTOC_Shortcode( $parser, $renderer, $settings );
 $template_output                              = $template_shortcode->shortcode(
 	array(
@@ -338,11 +349,11 @@ if ( ! preg_match( '/data-baretoc-config="([^"]+)"/', $template_output, $templat
 
 $template_config = json_decode( html_entity_decode( $template_match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ), true );
 
-if ( ! is_array( $template_config ) || 4 !== $template_config['minimumHeadings'] || '.entry-content' !== $template_config['container'] || 'bullets' !== $template_config['listStyle'] || true !== $template_config['collapsible'] || false !== $template_config['initiallyOpen'] ) {
+if ( ! is_array( $template_config ) || 4 !== $template_config['minimumHeadings'] || '.entry-content' !== $template_config['container'] || 'bullets' !== $template_config['listStyle'] || true !== $template_config['collapsible'] || false !== $template_config['initiallyOpen'] || true !== $template_config['smoothToggle'] ) {
 	baretoc_test_fail( 'Template shortcode configuration is incorrect.' );
 }
 
-unset( $GLOBALS['baretoc_test_doing_content_filter'], $GLOBALS['baretoc_test_scripts'] );
+unset( $GLOBALS['baretoc_test_doing_content_filter'], $GLOBALS['baretoc_test_scripts'], $GLOBALS['baretoc_test_option'] );
 
 $GLOBALS['baretoc_test_option'] = array_merge(
 	BareTOC_Settings::defaults(),

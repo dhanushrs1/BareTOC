@@ -4,7 +4,7 @@ Tags: table of contents, toc, headings, anchors, seo
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ Core features:
 * Prevent duplicated numbering such as "2. 2. Installation" without altering headings.
 * Set a title, title element, and minimum heading count.
 * Opt into shortcode-only open and close controls with accessible plus and minus icons.
+* Optionally animate opening and closing with a global reduced-motion-aware setting.
 * Use shortcode-only placement or automatic insertion.
 * Disable BareTOC or override heading levels on an individual post.
 * Exclude a heading with the `baretoc-ignore` or `no-toc` class.
@@ -99,6 +100,8 @@ Yes. Add `[baretoc]` once to a reusable single-post or single-page template. Bar
 
 Use `[baretoc toggle="yes"]` to add the control and start open. Use `[baretoc toggle="yes" initial="closed"]` to start closed. This is intentionally a per-shortcode feature with no global setting. Without `toggle="yes"`, the TOC remains open and no control or toggle script is added.
 
+The separate Smooth open/close checkbox under Settings > BareTOC globally controls whether enabled drawers animate. It is disabled by default and always respects the visitor's reduced-motion preference.
+
 = Why does BareTOC remove the number at the start of a TOC label? =
 
 Smart numbering cleanup prevents the list marker and a number already written into the heading from appearing together. For example, the heading "2. Installation" is displayed as "Installation" inside an ordered list, where the list supplies the number. The original heading and its anchor are never changed. Disable the option under Settings > BareTOC or use `[baretoc clean_numbers="no"]` to retain the complete label.
@@ -108,6 +111,12 @@ Smart numbering cleanup prevents the list marker and a number already written in
 BareTOC uses WordPress's native update system. During normal dashboard or background update checks, it requests signed release metadata from the SiteFueler Update API. Available releases appear on the Plugins and Updates screens and install through WordPress's standard updater. Sites upgrading from a version earlier than 1.3.0 must install version 1.3.0 manually once; later releases can then be installed from the dashboard.
 
 == Changelog ==
+
+= 1.3.3 =
+
+* Added an optional global smooth open/close animation setting.
+* Added reduced-motion handling and an immediate fallback.
+* Simplified the settings-page shortcode reference design.
 
 = 1.3.2 =
 

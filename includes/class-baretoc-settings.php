@@ -56,6 +56,7 @@ final class BareTOC_Settings {
 			'placement'        => 'shortcode',
 			'generate_ids'     => true,
 			'smooth_scroll'    => false,
+			'smooth_toggle'    => false,
 			'css'              => 'none',
 		);
 	}
@@ -143,6 +144,7 @@ final class BareTOC_Settings {
 		// An unchecked checkbox is omitted from the submitted option array.
 		$input['generate_ids']    = ! empty( $input['generate_ids'] );
 		$input['smooth_scroll']   = ! empty( $input['smooth_scroll'] );
+		$input['smooth_toggle']   = ! empty( $input['smooth_toggle'] );
 		$input['clean_numbering'] = ! empty( $input['clean_numbering'] );
 
 		return $this->normalize( $input );
@@ -260,6 +262,10 @@ final class BareTOC_Settings {
 							<label><input type="checkbox" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[smooth_scroll]" value="1" <?php checked( $settings['smooth_scroll'] ); ?>> <?php esc_html_e( 'Enable smooth scrolling for BareTOC links', 'baretoc' ); ?></label>
 							<p class="description"><?php esc_html_e( 'Disabled by default. Reduced-motion preferences are always respected.', 'baretoc' ); ?></p>
 						</td></tr>
+						<tr><th scope="row"><?php esc_html_e( 'Smooth open/close', 'baretoc' ); ?></th><td>
+							<label><input type="checkbox" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[smooth_toggle]" value="1" <?php checked( $settings['smooth_toggle'] ); ?>> <?php esc_html_e( 'Animate TOC opening and closing', 'baretoc' ); ?></label>
+							<p class="description"><?php esc_html_e( 'Applies only to shortcodes using toggle="yes". Disabled by default and reduced-motion preferences are respected.', 'baretoc' ); ?></p>
+						</td></tr>
 						<tr><th scope="row"><?php esc_html_e( 'Plugin CSS', 'baretoc' ); ?></th><td><fieldset>
 							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="none" <?php checked( $settings['css'], 'none' ); ?>> <?php esc_html_e( 'No plugin CSS (recommended)', 'baretoc' ); ?></label><br>
 							<label><input type="radio" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[css]" value="minimal" <?php checked( $settings['css'], 'minimal' ); ?>> <?php esc_html_e( 'Minimal structural CSS', 'baretoc' ); ?></label>
@@ -277,7 +283,7 @@ final class BareTOC_Settings {
 						<p><strong><?php esc_html_e( 'Open and close control', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc toggle="yes"]' ); ?></code></p>
 						<p><strong><?php esc_html_e( 'Open and close control, initially closed', 'baretoc' ); ?></strong><br><code><?php echo esc_html( '[baretoc toggle="yes" initial="closed"]' ); ?></code></p>
 					</div>
-					<p class="description"><strong><?php esc_html_e( 'Toggle behavior is shortcode-only.', 'baretoc' ); ?></strong> <?php esc_html_e( 'Without toggle="yes", the table of contents stays open and no open/close control or toggle script is added.', 'baretoc' ); ?></p>
+					<p class="description"><strong><?php esc_html_e( 'Toggle behavior is shortcode-only.', 'baretoc' ); ?></strong> <?php esc_html_e( 'Without toggle="yes", the table of contents stays open and no open/close control or toggle script is added. Animation is controlled separately by the global Smooth open/close setting above.', 'baretoc' ); ?></p>
 					<table class="widefat striped baretoc-shortcode-attributes">
 						<thead><tr><th><?php esc_html_e( 'Attribute', 'baretoc' ); ?></th><th><?php esc_html_e( 'Purpose', 'baretoc' ); ?></th></tr></thead>
 						<tbody>
@@ -454,6 +460,7 @@ final class BareTOC_Settings {
 			'placement'        => in_array( $values['placement'], array( 'shortcode', 'before_content', 'after_first_paragraph', 'before_first_heading' ), true ) ? $values['placement'] : $defaults['placement'],
 			'generate_ids'     => ! empty( $values['generate_ids'] ),
 			'smooth_scroll'    => ! empty( $values['smooth_scroll'] ),
+			'smooth_toggle'    => ! empty( $values['smooth_toggle'] ),
 			'css'              => 'minimal' === $values['css'] ? 'minimal' : 'none',
 		);
 	}
