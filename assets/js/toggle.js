@@ -1,13 +1,16 @@
 (function () {
 	'use strict';
 
-	function setState(button, content, expanded) {
+	var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	function updateControl(button, expanded) {
 		var openIcon = button.querySelector('.baretoc-toggle-icon--open');
 		var closeIcon = button.querySelector('.baretoc-toggle-icon--close');
+		var openLabel = button.getAttribute('data-open-label') || 'Open table of contents';
+		var closeLabel = button.getAttribute('data-close-label') || 'Close table of contents';
 
 		button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-		button.setAttribute('aria-label', expanded ? button.getAttribute('data-close-label') : button.getAttribute('data-open-label'));
-		content.hidden = !expanded;
+		button.setAttribute('aria-label', expanded ? closeLabel : openLabel);
 
 		if (openIcon) {
 			openIcon.hidden = expanded;
@@ -16,6 +19,47 @@
 		if (closeIcon) {
 			closeIcon.hidden = !expanded;
 		}
+	}
+
+	function setState(button, content, expanded) {
+		updateControl(button, expanded);
+		content.hidden = !expanded;
+	}
+
+	function animateState(button, content, expanded) {
+		var startHeight;
+		var endHeight;
+		var animation;
+
+		if (button.getAttribute('data-baretoc-smooth') !== 'yes' || typeof content.animate !== 'function' || (reducedMotion && reducedMotion.matches)) {
+			setState(button, content, expanded);
+			return;
+		}
+
+		if (expanded) {
+			content.hidden = false;
+			startHeight = 0;
+			endHeight = content.scrollHeight;
+		} else {
+			startHeight = content.getBoundingClientRect().height;
+			endHeight = 0;
+		}
+
+		updateControl(button, expanded);
+		button.disabled = true;
+		content.style.overflow = 'hidden';
+		animation = content.animate(
+			[
+				{ height: startHeight + 'px', opacity: expanded ? 0 : 1 },
+				{ height: endHeight + 'px', opacity: expanded ? 1 : 0 }
+			],
+			{ duration: 220, easing: 'ease' }
+		);
+		animation.onfinish = function () {
+			content.hidden = !expanded;
+			content.style.removeProperty('overflow');
+			button.disabled = false;
+		};
 	}
 
 	function contentFor(button) {
@@ -60,7 +104,7 @@
 			return;
 		}
 
-		setState(button, content, button.getAttribute('aria-expanded') !== 'true');
+		animateState(button, content, button.getAttribute('aria-expanded') !== 'true');
 	});
 
 	if (document.readyState === 'loading') {

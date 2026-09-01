@@ -151,6 +151,7 @@ final class BareTOC_Shortcode {
 			'container'       => isset( $args['container'] ) ? (string) $args['container'] : '',
 			'collapsible'     => ! empty( $args['collapsible'] ),
 			'initiallyOpen'   => ! isset( $args['initially_open'] ) || ! empty( $args['initially_open'] ),
+			'smoothToggle'    => ! empty( $args['smooth_toggle'] ),
 		);
 		$json = wp_json_encode( $data );
 

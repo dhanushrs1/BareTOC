@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.3
+
+- Added a global, opt-in smooth open/close animation setting for shortcode-enabled TOC drawers.
+- Added reduced-motion handling and a no-animation fallback for the drawer transition.
+- Simplified the shortcode-reference presentation on the settings page.
+
 ## 1.3.2
 
 - Added shortcode-only open and close controls with accessible plus and minus icons.
